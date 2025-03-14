@@ -7,13 +7,12 @@ module.exports = {
 
   provider: 'random',
 
-  getProvider: function () {
+  getProvider() {
     'use strict';
 
     if (this.provider === 'random') {
-
-      var providers = Object.keys(this.providers);
-      var index = Math.floor(Math.random() * providers.length);
+      const providers = Object.keys(this.providers);
+      const index = Math.floor(Math.random() * providers.length);
 
       return providers[index];
     }
@@ -21,13 +20,13 @@ module.exports = {
     return this.provider;
   },
 
-  setProvider: function (provider) {
+  setProvider(provider) {
     'use strict';
 
     this.provider = provider;
   },
 
-  getImageUrl: function (size) {
+  getImageUrl(size) {
     'use strict';
 
     return this.providers[this.getProvider()].getImageUrl(size);

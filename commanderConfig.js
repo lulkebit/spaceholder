@@ -1,12 +1,12 @@
-var fs = require('fs');
-var program = require('commander');
-var Image = require('./image/Image');
+const fs = require('fs');
+const program = require('commander');
+const Image = require('./image/Image');
 
 module.exports = program.version('1.10.4', '-v, --version')
-  .option('-n, --number [integer]', 'Number of files to generate', function (numberString) {
+  .option('-n, --number [integer]', 'Number of files to generate', (numberString) => {
     'use strict';
 
-    var number = parseInt(numberString);
+    const number = parseInt(numberString);
 
     if (isNaN(number)) {
       return 1;
@@ -14,7 +14,7 @@ module.exports = program.version('1.10.4', '-v, --version')
 
     return number;
   }, 1)
-  .option('-s, --size [1024x768]', 'Image size', function (size) {
+  .option('-s, --size [1024x768]', 'Image size', (size) => {
     'use strict';
 
     if (size.indexOf('x') === -1) {
@@ -25,7 +25,7 @@ module.exports = program.version('1.10.4', '-v, --version')
 
   }, '1024x768')
   .option('-p, --provider [provider]', 'Set the image provider; ' + Object.keys(Image.providers).join(', '),
-    function (provider) {
+    (provider) => {
       'use strict';
 
       Image.setProvider(provider);
