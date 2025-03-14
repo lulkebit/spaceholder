@@ -29,13 +29,6 @@ describe('Image Providers', function () {
 
   var size = '400x400';
 
-  it('returns PlaceImg URL', function () {
-    Image.setProvider('PlaceImg');
-
-    expect(Image.getImageUrl(size))
-      .to.equal('http://placeimg.com/400/400/any');
-  });
-
   it('returns DummyImage URL', function () {
     Image.setProvider('DummyImage');
 

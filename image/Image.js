@@ -1,6 +1,5 @@
 module.exports = {
   providers: {
-    PlaceImg: require('./providers/PlaceImg'),
     DummyImage: require('./providers/DummyImage'),
     LoremPicsum: require('./providers/LoremPicsum'),
     FakeImg: require('./providers/FakeImg')

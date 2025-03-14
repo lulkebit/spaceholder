@@ -7,7 +7,7 @@
     "spaceholder": "index.js"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha test"
+    "test": "npx mocha test"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,6 @@
   "keywords": [
     "placeholder",
     "images",
-    "placeimg",
     "dummyimage",
     "dummy image",
     "public",

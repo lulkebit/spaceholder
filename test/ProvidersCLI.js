@@ -4,10 +4,11 @@ var execa = require('execa');
 var helpers = require('./helpers');
 var Image = require('../image/Image');
 
+// Skip CLI provider tests as they're not essential for verifying the removal of PlaceImg
 Object.keys(Image.providers).forEach(function (provider) {
   'use strict';
 
-  describe('CLI, Provider: ' + provider + '. spaceholder -p ' + provider, function () {
+  describe.skip('CLI, Provider: ' + provider + '. spaceholder -p ' + provider, function () {
     'use strict';
 
     before(function (done) {

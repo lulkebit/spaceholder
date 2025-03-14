@@ -10,7 +10,7 @@
 
 ### What is it?
 Spaceholder makes it easy to download placeholder images when you need them.
-Images are downloaded from Picsum.photos, PlaceIMG.com, Dummyimage.com, Fakeimg.pl.
+Images are downloaded from Picsum.photos, Dummyimage.com, Fakeimg.pl.
 
 ### Installation
 Spaceholder requires that you have Node.js installed on you computer
@@ -41,10 +41,10 @@ spaceholder -n 50 -s 800x600 -p LoremPicsum
 - [Dummy Image](http://dummyimage.com)
 - [FakeImg](fakeimg.pl)
 - [Picsum Photos](http://picsum.photos)
-- [PlaceImg](http://placeimg.com)
 
 ### Contributors
 - [mrtnsn](https://github.com/mrtnsn)
+- [lulkebit](https://github.com/lulkebit)
 
 ### License
 MIT © [Daniel Eckermann](http://danieleckermann.com)
