@@ -1,67 +1,86 @@
 #! /usr/bin/env node
 
-var followRedirects = require('follow-redirects');
-var http = followRedirects.http;
-var https = followRedirects.https;
-var fs = require('fs');
-var random = require('random-string');
-var Image = require('./image/Image');
-var readline = require('readline');
+const followRedirects = require('follow-redirects');
+const http = followRedirects.http;
+const https = followRedirects.https;
+const fs = require('fs');
+const random = require('random-string');
+const Image = require('./image/Image');
+const readline = require('readline');
+const { promisify } = require('util');
 
 followRedirects.maxRedirects = 10;
 
 /* Require Commander configuration */
-var program = require('./commanderConfig');
+const program = require('./commanderConfig');
 
-var createdFilesCount = 0;
-var createdFiles = [];
+let createdFilesCount = 0;
+const createdFiles = [];
 
-var download = function (url, dest) {
+// Promisify the necessary functions
+const closeFile = promisify(fs.close);
+const httpGet = (url) => {
+  return new Promise((resolve, reject) => {
+    const requestFn = url.startsWith('http://') ? http.get : https.get;
+    requestFn(url, (response) => {
+      resolve(response);
+    }).on('error', (err) => {
+      reject(err);
+    });
+  });
+};
+
+const download = async (url, dest) => {
   'use strict';
 
-  var file = fs.createWriteStream(dest);
+  try {
+    const file = fs.createWriteStream(dest);
+    const response = await httpGet(url);
+    
+    return new Promise((resolve, reject) => {
+      response.pipe(file);
+      
+      file.on('finish', async () => {
+        try {
+          file.close();
+          
+          createdFilesCount++;
+          createdFiles.push(dest);
 
-  var handleResponse = function (response) {
-    response.pipe(file);
-    file.on('finish', function () {
-      file.close(function () {
-        'use strict';
+          const percentage = Math.ceil((createdFilesCount / program.number * 100));
 
-        createdFilesCount++;
-        createdFiles.push(dest);
+          readline.cursorTo(process.stdout, 0);
+          process.stdout.write('Downloaded ' + createdFilesCount + ' of ' + program.number + '. [' + percentage + ' %]');
 
-        var percentage = Math.ceil((createdFilesCount / program.number * 100));
-
-        readline.cursorTo(process.stdout, 0);
-        process.stdout.write('Downloaded ' + createdFilesCount + ' of ' + program.number + '. [' + percentage + ' %]');
-
-        if (createdFilesCount === program.number) {
-          console.info("\n" + program.number + ' image(s) successfully downloaded');
+          if (createdFilesCount === program.number) {
+            console.info("\n" + program.number + ' image(s) successfully downloaded');
+          }
+          
+          resolve();
+        } catch (err) {
+          reject(err);
         }
       });
+      
+      file.on('error', (err) => {
+        console.log('Failed');
+        reject(err);
+      });
     });
-    file.on('error', function () {
-      console.log('Failed');
-    })
-  };
-
-  if (url.substring(0, 7) === 'http://') {
-    http.get(url, function (response) {
-      handleResponse(response)
-    });
-  } else {
-    https.get(url, function (response) {
-      handleResponse(response)
-    });
+  } catch (err) {
+    console.error('Download failed:', err.message);
   }
 };
 
-var filename = function (iterator) {
+const filename = (iterator) => {
   'use strict';
 
-  return 'spaceholder_' + program.size + '_' + random({length: 4}) + iterator + random({length: 4}) + '.jpg'
-}
+  return 'spaceholder_' + program.size + '_' + random({length: 4}) + iterator + random({length: 4}) + '.jpg';
+};
 
-for (i = 1; i <= program.number; i++) {
-  download(Image.getImageUrl(program.size), filename(i));
-}
+// Execute downloads
+(async () => {
+  for (let i = 1; i <= program.number; i++) {
+    await download(Image.getImageUrl(program.size), filename(i));
+  }
+})();
